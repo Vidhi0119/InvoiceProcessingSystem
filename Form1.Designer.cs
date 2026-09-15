@@ -34,14 +34,14 @@
             btnBrowse = new Button();
             grpProcessing = new GroupBox();
             lblProcessingStatus = new Label();
-            progressBar1 = new ProgressBar();
-            label1 = new Label();
+            progressBar = new ProgressBar();
+            labelProgress = new Label();
             lblPercentage = new Label();
-            button1 = new Button();
+            btnProcessInvoices = new Button();
             grpSummary = new GroupBox();
-            label2 = new Label();
-            label3 = new Label();
-            label4 = new Label();
+            lblTotalInvoices = new Label();
+            lblCompleted = new Label();
+            lblErrors = new Label();
             grpProcessing.SuspendLayout();
             grpSummary.SuspendLayout();
             SuspendLayout();
@@ -86,8 +86,8 @@
             // grpProcessing
             // 
             grpProcessing.Controls.Add(lblProcessingStatus);
-            grpProcessing.Controls.Add(progressBar1);
-            grpProcessing.Controls.Add(label1);
+            grpProcessing.Controls.Add(progressBar);
+            grpProcessing.Controls.Add(labelProgress);
             grpProcessing.Location = new Point(24, 171);
             grpProcessing.Name = "grpProcessing";
             grpProcessing.Size = new Size(508, 147);
@@ -104,22 +104,22 @@
             lblProcessingStatus.TabIndex = 7;
             lblProcessingStatus.Text = "Waiting for processing...";
             // 
-            // progressBar1
+            // progressBar
             // 
-            progressBar1.Location = new Point(6, 70);
-            progressBar1.Name = "progressBar1";
-            progressBar1.Size = new Size(450, 20);
-            progressBar1.TabIndex = 6;
-            progressBar1.Click += progressBar1_Click;
+            progressBar.Location = new Point(6, 70);
+            progressBar.Name = "progressBar";
+            progressBar.Size = new Size(450, 20);
+            progressBar.TabIndex = 6;
+            progressBar.Click += progressBar1_Click;
             // 
-            // label1
+            // labelProgress
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(6, 47);
-            label1.Name = "label1";
-            label1.Size = new Size(65, 20);
-            label1.TabIndex = 0;
-            label1.Text = "Progress";
+            labelProgress.AutoSize = true;
+            labelProgress.Location = new Point(6, 47);
+            labelProgress.Name = "labelProgress";
+            labelProgress.Size = new Size(65, 20);
+            labelProgress.TabIndex = 0;
+            labelProgress.Text = "Progress";
             // 
             // lblPercentage
             // 
@@ -130,20 +130,20 @@
             lblPercentage.TabIndex = 7;
             lblPercentage.Text = "0%";
             // 
-            // button1
+            // btnProcessInvoices
             // 
-            button1.Location = new Point(188, 336);
-            button1.Name = "button1";
-            button1.Size = new Size(159, 44);
-            button1.TabIndex = 8;
-            button1.Text = "Process Invoices";
-            button1.UseVisualStyleBackColor = true;
+            btnProcessInvoices.Location = new Point(188, 336);
+            btnProcessInvoices.Name = "btnProcessInvoices";
+            btnProcessInvoices.Size = new Size(159, 44);
+            btnProcessInvoices.TabIndex = 8;
+            btnProcessInvoices.Text = "Process Invoices";
+            btnProcessInvoices.UseVisualStyleBackColor = true;
             // 
             // grpSummary
             // 
-            grpSummary.Controls.Add(label4);
-            grpSummary.Controls.Add(label3);
-            grpSummary.Controls.Add(label2);
+            grpSummary.Controls.Add(lblErrors);
+            grpSummary.Controls.Add(lblCompleted);
+            grpSummary.Controls.Add(lblTotalInvoices);
             grpSummary.Location = new Point(30, 413);
             grpSummary.Name = "grpSummary";
             grpSummary.Size = new Size(282, 171);
@@ -151,32 +151,32 @@
             grpSummary.TabStop = false;
             grpSummary.Text = "Processing Summary";
             // 
-            // label2
+            // lblTotalInvoices
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(6, 34);
-            label2.Name = "label2";
-            label2.Size = new Size(114, 20);
-            label2.TabIndex = 10;
-            label2.Text = "Total Invoices: 0";
+            lblTotalInvoices.AutoSize = true;
+            lblTotalInvoices.Location = new Point(6, 34);
+            lblTotalInvoices.Name = "lblTotalInvoices";
+            lblTotalInvoices.Size = new Size(114, 20);
+            lblTotalInvoices.TabIndex = 10;
+            lblTotalInvoices.Text = "Total Invoices: 0";
             // 
-            // label3
+            // lblCompleted
             // 
-            label3.AutoSize = true;
-            label3.Location = new Point(6, 76);
-            label3.Name = "label3";
-            label3.Size = new Size(98, 20);
-            label3.TabIndex = 11;
-            label3.Text = "Completed: 0";
+            lblCompleted.AutoSize = true;
+            lblCompleted.Location = new Point(6, 76);
+            lblCompleted.Name = "lblCompleted";
+            lblCompleted.Size = new Size(98, 20);
+            lblCompleted.TabIndex = 11;
+            lblCompleted.Text = "Completed: 0";
             // 
-            // label4
+            // lblErrors
             // 
-            label4.AutoSize = true;
-            label4.Location = new Point(6, 122);
-            label4.Name = "label4";
-            label4.Size = new Size(62, 20);
-            label4.TabIndex = 12;
-            label4.Text = "Errors: 0";
+            lblErrors.AutoSize = true;
+            lblErrors.Location = new Point(6, 122);
+            lblErrors.Name = "lblErrors";
+            lblErrors.Size = new Size(62, 20);
+            lblErrors.TabIndex = 12;
+            lblErrors.Text = "Errors: 0";
             // 
             // Form1
             // 
@@ -184,7 +184,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 711);
             Controls.Add(grpSummary);
-            Controls.Add(button1);
+            Controls.Add(btnProcessInvoices);
             Controls.Add(lblPercentage);
             Controls.Add(grpProcessing);
             Controls.Add(btnBrowse);
@@ -208,14 +208,14 @@
         private TextBox txtFilePath;
         private Button btnBrowse;
         private GroupBox grpProcessing;
-        private Label label1;
-        private ProgressBar progressBar1;
+        private Label labelProgress;
+        private ProgressBar progressBar;
         private Label lblProcessingStatus;
         private Label lblPercentage;
-        private Button button1;
+        private Button btnProcessInvoices;
         private GroupBox grpSummary;
-        private Label label2;
-        private Label label4;
-        private Label label3;
+        private Label lblTotalInvoices;
+        private Label lblErrors;
+        private Label lblCompleted;
     }
 }
