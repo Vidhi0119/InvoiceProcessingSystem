@@ -40,6 +40,8 @@
             button1 = new Button();
             grpSummary = new GroupBox();
             label2 = new Label();
+            label3 = new Label();
+            label4 = new Label();
             grpProcessing.SuspendLayout();
             grpSummary.SuspendLayout();
             SuspendLayout();
@@ -139,6 +141,8 @@
             // 
             // grpSummary
             // 
+            grpSummary.Controls.Add(label4);
+            grpSummary.Controls.Add(label3);
             grpSummary.Controls.Add(label2);
             grpSummary.Location = new Point(30, 413);
             grpSummary.Name = "grpSummary";
@@ -155,6 +159,24 @@
             label2.Size = new Size(114, 20);
             label2.TabIndex = 10;
             label2.Text = "Total Invoices: 0";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(6, 76);
+            label3.Name = "label3";
+            label3.Size = new Size(98, 20);
+            label3.TabIndex = 11;
+            label3.Text = "Completed: 0";
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(6, 122);
+            label4.Name = "label4";
+            label4.Size = new Size(62, 20);
+            label4.TabIndex = 12;
+            label4.Text = "Errors: 0";
             // 
             // Form1
             // 
@@ -193,5 +215,7 @@
         private Button button1;
         private GroupBox grpSummary;
         private Label label2;
+        private Label label4;
+        private Label label3;
     }
 }
