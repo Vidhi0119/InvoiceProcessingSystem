@@ -1,6 +1,6 @@
 ﻿namespace InvoiceProcessingSystem
 {
-    partial class Form1
+    partial class InvoiceProcessingForm
     {
         /// <summary>
         ///  Required designer variable.
@@ -178,7 +178,7 @@
             lblErrors.TabIndex = 12;
             lblErrors.Text = "Errors: 0";
             // 
-            // Form1
+            // InvoiceProcessingForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -191,8 +191,8 @@
             Controls.Add(txtFilePath);
             Controls.Add(lblFile);
             Controls.Add(lblTitle);
-            Name = "Form1";
-            Text = "InvoiceProcessingForm";
+            Name = "InvoiceProcessingForm";
+            Text = "Invoice Processing Form";
             Load += Form1_Load;
             grpProcessing.ResumeLayout(false);
             grpProcessing.PerformLayout();

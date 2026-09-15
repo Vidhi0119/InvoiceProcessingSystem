@@ -1,8 +1,8 @@
 namespace InvoiceProcessingSystem
 {
-    public partial class Form1 : Form
+    public partial class InvoiceProcessingForm : Form
     {
-        public Form1()
+        public InvoiceProcessingForm()
         {
             InitializeComponent();
         }
