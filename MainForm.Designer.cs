@@ -39,9 +39,10 @@
             lblPercentage = new Label();
             btnProcessInvoices = new Button();
             grpSummary = new GroupBox();
-            lblTotalInvoices = new Label();
-            lblCompleted = new Label();
             lblErrors = new Label();
+            lblCompleted = new Label();
+            lblTotalInvoices = new Label();
+            btnReadInvoices = new Button();
             grpProcessing.SuspendLayout();
             grpSummary.SuspendLayout();
             SuspendLayout();
@@ -71,7 +72,7 @@
             txtFilePath.Name = "txtFilePath";
             txtFilePath.Size = new Size(400, 27);
             txtFilePath.TabIndex = 3;
-            txtFilePath.Text = "No file selected";
+            txtFilePath.TextChanged += txtFilePath_TextChanged;
             // 
             // btnBrowse
             // 
@@ -132,7 +133,7 @@
             // 
             // btnProcessInvoices
             // 
-            btnProcessInvoices.Location = new Point(188, 336);
+            btnProcessInvoices.Location = new Point(217, 336);
             btnProcessInvoices.Name = "btnProcessInvoices";
             btnProcessInvoices.Size = new Size(159, 44);
             btnProcessInvoices.TabIndex = 8;
@@ -151,14 +152,14 @@
             grpSummary.TabStop = false;
             grpSummary.Text = "Processing Summary";
             // 
-            // lblTotalInvoices
+            // lblErrors
             // 
-            lblTotalInvoices.AutoSize = true;
-            lblTotalInvoices.Location = new Point(6, 34);
-            lblTotalInvoices.Name = "lblTotalInvoices";
-            lblTotalInvoices.Size = new Size(114, 20);
-            lblTotalInvoices.TabIndex = 10;
-            lblTotalInvoices.Text = "Total Invoices: 0";
+            lblErrors.AutoSize = true;
+            lblErrors.Location = new Point(6, 122);
+            lblErrors.Name = "lblErrors";
+            lblErrors.Size = new Size(62, 20);
+            lblErrors.TabIndex = 12;
+            lblErrors.Text = "Errors: 0";
             // 
             // lblCompleted
             // 
@@ -169,20 +170,31 @@
             lblCompleted.TabIndex = 11;
             lblCompleted.Text = "Completed: 0";
             // 
-            // lblErrors
+            // lblTotalInvoices
             // 
-            lblErrors.AutoSize = true;
-            lblErrors.Location = new Point(6, 122);
-            lblErrors.Name = "lblErrors";
-            lblErrors.Size = new Size(62, 20);
-            lblErrors.TabIndex = 12;
-            lblErrors.Text = "Errors: 0";
+            lblTotalInvoices.AutoSize = true;
+            lblTotalInvoices.Location = new Point(6, 34);
+            lblTotalInvoices.Name = "lblTotalInvoices";
+            lblTotalInvoices.Size = new Size(114, 20);
+            lblTotalInvoices.TabIndex = 10;
+            lblTotalInvoices.Text = "Total Invoices: 0";
+            // 
+            // btnReadInvoices
+            // 
+            btnReadInvoices.Location = new Point(36, 336);
+            btnReadInvoices.Name = "btnReadInvoices";
+            btnReadInvoices.Size = new Size(150, 44);
+            btnReadInvoices.TabIndex = 10;
+            btnReadInvoices.Text = "Read Invoices";
+            btnReadInvoices.UseVisualStyleBackColor = true;
+            btnReadInvoices.Click += btnReadInvoices_Click;
             // 
             // InvoiceProcessingForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 711);
+            ClientSize = new Size(800, 623);
+            Controls.Add(btnReadInvoices);
             Controls.Add(grpSummary);
             Controls.Add(btnProcessInvoices);
             Controls.Add(lblPercentage);
@@ -217,5 +229,6 @@
         private Label lblTotalInvoices;
         private Label lblErrors;
         private Label lblCompleted;
+        private Button btnReadInvoices;
     }
 }
