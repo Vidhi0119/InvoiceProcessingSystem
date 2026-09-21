@@ -5,8 +5,11 @@
         // InvoiceId, CustomerIdCustomerName, Amount, Status, InvoiceDate, DueDate
 
         public string? InvoiceId { get; set; }
+        
 
         public string? CustomerId { get; set; }
+        
+        
 
         public string? CustomerName { get; set; }
         public string? RawCustomerName { get; set; }

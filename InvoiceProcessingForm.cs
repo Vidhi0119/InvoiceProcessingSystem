@@ -1,3 +1,4 @@
+using InvoiceProcessingSystem.Services;
 using Microsoft.Extensions.Configuration;
 
 namespace InvoiceProcessingSystem
@@ -23,8 +24,30 @@ namespace InvoiceProcessingSystem
 
         private void btnProcessFiles_Click(object sender, EventArgs e)
         {
-            // Processing logic will be added next.
-            MessageBox.Show("Process Files button clicked.");
+
+            string inputFolder =
+        Program.Configuration["FileProcessing:InputFolder"] ?? "";
+
+            if (string.IsNullOrWhiteSpace(inputFolder))
+            {
+                MessageBox.Show("Input folder is not configured.");
+                return;
+            }
+
+            try
+            {
+                InvoiceProcessor processor =
+                    new InvoiceProcessor(inputFolder);
+
+                processor.ProcessFiles();
+
+                MessageBox.Show("File validation completed.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            
         }
     }
 }

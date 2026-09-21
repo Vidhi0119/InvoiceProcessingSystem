@@ -20,8 +20,8 @@
 
   <ItemGroup>
     <Folder Include="Configuration\" />
-    <Folder Include="Error\" />
-    <Folder Include="ValidInvoices\" />
+    <Folder Include="Data\Error\" />
+    <Folder Include="Data\ValidInvoices\" />
   </ItemGroup>
 
   <ItemGroup>

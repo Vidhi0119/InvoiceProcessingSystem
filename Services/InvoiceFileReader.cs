@@ -4,31 +4,39 @@ namespace InvoiceProcessingSystem.Services
 {
     public class InvoiceFileReader
     {
-
-        // Create a method called ReadInvoices that should accept a file path and return a list of invoices.
-
-
         public List<Invoice> ReadInvoices(string filePath)
         {
             List<Invoice> invoices = new List<Invoice>();
+
             string[] lines = File.ReadAllLines(filePath);
 
             for (int i = 1; i < lines.Length; i++)
             {
                 string[] data = lines[i].Split(',');
 
-                bool isAmountValid = decimal.TryParse(data[3], out decimal amount);
-                bool isInvoiceDateValid = DateTime.TryParse(data[5], out DateTime invoiceDate);
+                if (data.Length < 7)
+                {
+                    // Invalid row structure.
+                    // File-level error handling will be added in InvoiceProcessor.
+                    continue;
+                }
 
-                bool isDueDateValid = DateTime.TryParse(data[6], out DateTime dueDate);
+                bool isAmountValid =
+                    decimal.TryParse(data[3], out decimal amount);
+
+                bool isInvoiceDateValid =
+                    DateTime.TryParse(data[5], out DateTime invoiceDate);
+
+                bool isDueDateValid =
+                    DateTime.TryParse(data[6], out DateTime dueDate);
 
                 Invoice invoice = new Invoice
                 {
-
-
                     InvoiceId = data[0],
+                    
 
                     CustomerId = data[1],
+                    
 
                     CustomerName = data[2],
                     RawCustomerName = data[2],
@@ -47,21 +55,12 @@ namespace InvoiceProcessingSystem.Services
                     RawDueDate = data[6],
                     DueDate = isDueDateValid ? dueDate : null,
                     IsDueDateValid = isDueDateValid
-
-
-
                 };
 
                 invoices.Add(invoice);
-
             }
 
             return invoices;
-
-            //check for invalid data.
-
-
         }
-
     }
 }
