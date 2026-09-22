@@ -39,11 +39,11 @@
             lblErrors = new Label();
             lblCompleted = new Label();
             lblTotalInvoices = new Label();
-            grpResults = new GroupBox();
-            dgvResults = new DataGridView();
+            grpValidationLogs = new GroupBox();
+            dgvValidationLogs = new DataGridView();
             grpSummary.SuspendLayout();
-            grpResults.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvResults).BeginInit();
+            grpValidationLogs.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvValidationLogs).BeginInit();
             SuspendLayout();
             // 
             // lblTitle
@@ -105,7 +105,7 @@
             // 
             progressBar.Location = new Point(162, 275);
             progressBar.Name = "progressBar";
-            progressBar.Size = new Size(616, 19);
+            progressBar.Size = new Size(701, 24);
             progressBar.TabIndex = 6;
             // 
             // grpSummary
@@ -147,38 +147,32 @@
             lblTotalInvoices.TabIndex = 8;
             lblTotalInvoices.Text = "Total Invoices: 0";
             // 
-            // grpResults
+            // grpValidationLogs
             // 
-            grpResults.Controls.Add(dgvResults);
-            grpResults.Location = new Point(325, 320);
-            grpResults.Name = "grpResults";
-            grpResults.Size = new Size(453, 250);
-            grpResults.TabIndex = 11;
-            grpResults.TabStop = false;
-            grpResults.Text = "File Processing Results";
+            grpValidationLogs.Controls.Add(dgvValidationLogs);
+            grpValidationLogs.Location = new Point(20, 509);
+            grpValidationLogs.Name = "grpValidationLogs";
+            grpValidationLogs.Size = new Size(843, 356);
+            grpValidationLogs.TabIndex = 8;
+            grpValidationLogs.TabStop = false;
+            grpValidationLogs.Text = "Validation Logs";
             // 
-            // dgvResults
+            // dgvValidationLogs
             // 
-            dgvResults.AllowUserToAddRows = false;
-            dgvResults.AllowUserToDeleteRows = false;
-            dgvResults.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvResults.BackgroundColor = SystemColors.Control;
-            dgvResults.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvResults.Dock = DockStyle.Fill;
-            dgvResults.Location = new Point(3, 23);
-            dgvResults.Name = "dgvResults";
-            dgvResults.ReadOnly = true;
-            dgvResults.RowHeadersWidth = 51;
-            dgvResults.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvResults.Size = new Size(447, 224);
-            dgvResults.TabIndex = 0;
+            dgvValidationLogs.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvValidationLogs.Location = new Point(12, 56);
+            dgvValidationLogs.Name = "dgvValidationLogs";
+            dgvValidationLogs.RowHeadersWidth = 51;
+            dgvValidationLogs.Size = new Size(825, 282);
+            dgvValidationLogs.TabIndex = 0;
+            dgvValidationLogs.CellContentClick += dgvValidationLogs_CellContentClick;
             // 
             // InvoiceProcessingForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 600);
-            Controls.Add(grpResults);
+            ClientSize = new Size(893, 877);
+            Controls.Add(grpValidationLogs);
             Controls.Add(grpSummary);
             Controls.Add(progressBar);
             Controls.Add(lblPercentage);
@@ -191,8 +185,8 @@
             Text = "Invoice Processing Form";
             grpSummary.ResumeLayout(false);
             grpSummary.PerformLayout();
-            grpResults.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dgvResults).EndInit();
+            grpValidationLogs.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgvValidationLogs).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -212,8 +206,7 @@
         private Label lblTotalInvoices;
         private Label lblCompleted;
         private Label lblErrors;
-
-        private GroupBox grpResults;
-        private DataGridView dgvResults;
+        private GroupBox grpValidationLogs;
+        private DataGridView dgvValidationLogs;
     }
 }
