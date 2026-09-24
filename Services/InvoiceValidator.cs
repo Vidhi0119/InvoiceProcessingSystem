@@ -1,19 +1,19 @@
 ﻿using InvoiceProcessingSystem.Models;
-using System.Reflection;
 
 namespace InvoiceProcessingSystem.Services
 {
     internal class InvoiceValidator
     {
-
-        public string Validate(Invoice invoice)
+        public List<string> Validate(Invoice invoice)
         {
+            List<string> errors = new List<string>();
+
             // -------------------------
             // Invoice ID
             // -------------------------
             if (string.IsNullOrWhiteSpace(invoice.InvoiceId))
             {
-                return "Invoice ID should not be empty.";
+                errors.Add("Invoice ID should not be empty.");
             }
 
 
@@ -22,7 +22,7 @@ namespace InvoiceProcessingSystem.Services
             // -------------------------
             if (string.IsNullOrWhiteSpace(invoice.CustomerId))
             {
-                return "Customer ID should not be empty.";
+                errors.Add("Customer ID should not be empty.");
             }
 
 
@@ -31,39 +31,30 @@ namespace InvoiceProcessingSystem.Services
             // -------------------------
             if (string.IsNullOrWhiteSpace(invoice.CustomerName))
             {
-                return "Customer Name should not be empty.";
+                errors.Add("Customer Name should not be empty.");
             }
-
-            if (invoice.RawCustomerName!.All(char.IsDigit))
+            else if (invoice.CustomerName.All(char.IsDigit))
             {
-                return "Customer Name must contain text.";
-            }
-
-
-            // -------------------------
-            // Amount - Empty
-            // -------------------------
-            if (string.IsNullOrWhiteSpace(invoice.RawAmount))
-            {
-                return "Amount should not be empty.";
+                errors.Add("Customer Name must contain text.");
             }
 
 
             // -------------------------
-            // Amount - Type Validation
+            // Amount
             // -------------------------
-            if (!invoice.IsAmountValid)
+            if (string.IsNullOrWhiteSpace(invoice.Amount))
             {
-                return "Amount must be a valid decimal number.";
+                errors.Add("Amount should not be empty.");
             }
-
-
-            // -------------------------
-            // Amount - Value Validation
-            // -------------------------
-            if (invoice.Amount <= 0)
+            else if (!decimal.TryParse(
+                invoice.Amount,
+                out decimal amount))
             {
-                return "Amount must be greater than zero.";
+                errors.Add("Amount must be a valid decimal number.");
+            }
+            else if (amount <= 0)
+            {
+                errors.Add("Amount must be greater than zero.");
             }
 
 
@@ -72,67 +63,72 @@ namespace InvoiceProcessingSystem.Services
             // -------------------------
             if (string.IsNullOrWhiteSpace(invoice.Status))
             {
-                return "Status should not be empty.";
+                errors.Add("Status should not be empty.");
             }
-
-            if (invoice.RawStatus!.All(char.IsDigit))
+            else if (invoice.Status.All(char.IsDigit))
             {
-                return "Status must contain text.";
-            }
-
-
-            // -------------------------
-            // Invoice Date - Empty
-            // -------------------------
-            if (string.IsNullOrWhiteSpace(invoice.RawInvoiceDate))
-            {
-                return "Invoice Date should not be empty.";
+                errors.Add("Status must contain text.");
             }
 
 
             // -------------------------
-            // Invoice Date - Type Validation
+            // Invoice Date
             // -------------------------
-            if (!invoice.IsInvoiceDateValid)
+            bool isInvoiceDateValid = false;
+            DateTime invoiceDate = default;
+
+            if (string.IsNullOrWhiteSpace(invoice.InvoiceDate))
             {
-                return "Invoice Date must be a valid date.";
+                errors.Add("Invoice Date should not be empty.");
+            }
+            else if (!DateTime.TryParse(
+                invoice.InvoiceDate,
+                out invoiceDate))
+            {
+                errors.Add("Invoice Date must be a valid date.");
+            }
+            else
+            {
+                isInvoiceDateValid = true;
             }
 
 
             // -------------------------
-            // Due Date - Empty
+            // Due Date
             // -------------------------
-            if (string.IsNullOrWhiteSpace(invoice.RawDueDate))
+            bool isDueDateValid = false;
+            DateTime dueDate = default;
+
+            if (string.IsNullOrWhiteSpace(invoice.DueDate))
             {
-                return "Due Date should not be empty.";
+                errors.Add("Due Date should not be empty.");
             }
-
-
-            // -------------------------
-            // Due Date - Type Validation
-            // -------------------------
-            if (!invoice.IsDueDateValid)
+            else if (!DateTime.TryParse(
+                invoice.DueDate,
+                out dueDate))
             {
-                return "Due Date must be a valid date.";
+                errors.Add("Due Date must be a valid date.");
+            }
+            else
+            {
+                isDueDateValid = true;
             }
 
 
             // -------------------------
             // Due Date Validation
             // -------------------------
-            if (invoice.DueDate < invoice.InvoiceDate)
+            if (isInvoiceDateValid &&
+                isDueDateValid &&
+                dueDate < invoiceDate)
             {
-                return "Due Date cannot be before Invoice Date.";
+                errors.Add(
+                    "Due Date cannot be before Invoice Date."
+                );
             }
 
 
-            // -------------------------
-            // Invoice is valid
-            // -------------------------
-            return "";
-
+            return errors;
         }
     }
 }
-
-//check for all types of validation like amount > 0 and type change , TryParse 

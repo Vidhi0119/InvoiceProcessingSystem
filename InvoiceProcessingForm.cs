@@ -27,30 +27,39 @@ namespace InvoiceProcessingSystem
 
         private void btnProcessFiles_Click(object sender, EventArgs e)
         {
-
             string inputFolder =
-     Program.Configuration["FileProcessing:InputFolder"] ?? "";
+                Program.Configuration["FileProcessing:InputFolder"]
+                ?? "";
 
-            string validInvoicesFolder =
-                Program.Configuration["FileProcessing:ValidInvoicesFolder"] ?? "";
+            dgvValidationLogs.Rows.Clear();
 
-            string errorFolder =
-                Program.Configuration["FileProcessing:ErrorFolder"] ?? "";
+            txtProcessingLogs.Clear();
+
+            lblTotalInvoices.Text =
+                "Total Invoices: 0";
+
+            lblCompleted.Text =
+                "Successful: 0";
+
+            lblErrors.Text =
+                "Failed: 0";
+
+            lblPercentage.Text =
+                "0%";
+
+            progressBar.Value = 0;
 
             try
             {
                 InvoiceProcessor processor =
                     new InvoiceProcessor(
                         inputFolder,
-                        validInvoicesFolder,
-                        errorFolder
+                        AddProcessingLog,
+                        UpdateProgress
                     );
 
                 List<FileProcessingResult> results =
                     processor.ProcessFiles();
-
-                // Clear previous logs
-                dgvValidationLogs.Rows.Clear();
 
                 int totalInvoices = 0;
                 int successfulInvoices = 0;
@@ -58,23 +67,26 @@ namespace InvoiceProcessingSystem
 
                 foreach (FileProcessingResult result in results)
                 {
-                    // Update summary counts
-                    totalInvoices += result.TotalInvoices;
-                    successfulInvoices += result.SuccessfulInvoices;
-                    failedInvoices += result.FailedInvoices;
+                    totalInvoices +=
+                        result.TotalInvoices;
 
-                    // Add validation errors to logs
-                    foreach (ValidationLog log in result.ValidationLogs)
+                    successfulInvoices +=
+                        result.SuccessfulInvoices;
+
+                    failedInvoices +=
+                        result.FailedInvoices;
+
+                    foreach (ValidationError error
+                             in result.ValidationLogs)
                     {
                         dgvValidationLogs.Rows.Add(
-                            log.FileName,
-                            log.InvoiceId,
-                            log.ErrorMessage
+                            error.FileName,
+                            error.InvoiceId,
+                            error.ErrorMessage
                         );
                     }
                 }
 
-                // Update Processing Summary
                 lblTotalInvoices.Text =
                     "Total Invoices: " + totalInvoices;
 
@@ -84,19 +96,21 @@ namespace InvoiceProcessingSystem
                 lblErrors.Text =
                     "Failed: " + failedInvoices;
 
-                // For now, processing completes at 100%
-                lblPercentage.Text = "100%";
-                progressBar.Value = 100;
+                if (results.Count > 0)
+                {
+                    UpdateProgress(100);
 
-                MessageBox.Show(
-                    "Invoice validation completed.",
-                    "Validation Complete",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
+                    AddProcessingLog(
+                        "All files processed successfully."
+                    );
+                }
             }
             catch (Exception ex)
             {
+                AddProcessingLog(
+                    "Processing failed: " + ex.Message
+                );
+
                 MessageBox.Show(
                     ex.Message,
                     "Error",
@@ -104,8 +118,8 @@ namespace InvoiceProcessingSystem
                     MessageBoxIcon.Error
                 );
             }
-
         }
+
 
         private void dgvValidationLogs_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -139,6 +153,43 @@ namespace InvoiceProcessingSystem
             dgvValidationLogs.ReadOnly = true;
         }
 
+        private void grpValidationLogs_Enter(object sender, EventArgs e)
+        {
 
+        }
+
+        private void AddProcessingLog(string message)
+        {
+            txtProcessingLogs.AppendText(
+                $"{DateTime.Now:HH:mm:ss} - {message}"
+                + Environment.NewLine
+            );
+
+            txtProcessingLogs.SelectionStart =
+                txtProcessingLogs.Text.Length;
+
+            txtProcessingLogs.ScrollToCaret();
+        }
+
+        private void UpdateProgress(int percentage)
+        {
+            if (percentage < 0)
+                percentage = 0;
+
+            if (percentage > 100)
+                percentage = 100;
+
+            progressBar.Value = percentage;
+
+            lblPercentage.Text =
+                percentage + "%";
+
+            Application.DoEvents();
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
     }
 }

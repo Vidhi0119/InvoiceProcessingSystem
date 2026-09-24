@@ -8,50 +8,31 @@ namespace InvoiceProcessingSystem.Services
         private readonly string validInvoicesFolder;
         private readonly string errorFolder;
 
+        private readonly Action<string> log;
+        private readonly Action<int> updateProgress;
+
         public InvoiceProcessor(
             string inputFolder,
-            string validInvoicesFolder,
-            string errorFolder)
+            Action<string> log,
+            Action<int> updateProgress)
         {
-            string projectFolder = FindProjectFolder();
+            this.inputFolder =
+                Path.GetFullPath(inputFolder);
 
-            this.inputFolder = Path.GetFullPath(
-                Path.Combine(projectFolder, inputFolder)
-            );
+            string parentFolder =
+                Directory.GetParent(this.inputFolder)?.FullName
+                ?? throw new DirectoryNotFoundException(
+                    "Parent folder of Input folder could not be found."
+                );
 
-            this.validInvoicesFolder = Path.GetFullPath(
-                Path.Combine(projectFolder, validInvoicesFolder)
-            );
+            validInvoicesFolder =
+                Path.Combine(parentFolder, "ValidInvoices");
 
-            this.errorFolder = Path.GetFullPath(
-                Path.Combine(projectFolder, errorFolder)
-            );
-        }
+            errorFolder =
+                Path.Combine(parentFolder, "Error");
 
-        private string FindProjectFolder()
-        {
-            DirectoryInfo? directory =
-                new DirectoryInfo(AppContext.BaseDirectory);
-
-            while (directory != null)
-            {
-                string[] projectFiles =
-                    Directory.GetFiles(
-                        directory.FullName,
-                        "*.csproj"
-                    );
-
-                if (projectFiles.Length > 0)
-                {
-                    return directory.FullName;
-                }
-
-                directory = directory.Parent;
-            }
-
-            throw new DirectoryNotFoundException(
-                "Project folder could not be found."
-            );
+            this.log = log;
+            this.updateProgress = updateProgress;
         }
 
         public List<FileProcessingResult> ProcessFiles()
@@ -59,16 +40,50 @@ namespace InvoiceProcessingSystem.Services
             List<FileProcessingResult> results =
                 new List<FileProcessingResult>();
 
+            log("Application started.");
+
+            // --------------------------------
+            // Check Input Folder
+            // --------------------------------
+
+            log("Checking Input folder...");
+
             if (!Directory.Exists(inputFolder))
             {
-                throw new DirectoryNotFoundException(
-                    $"Input folder does not exist: {inputFolder}"
+                log(
+                    "Input folder not found. Please create the Input folder and configure its path in appsettings.json."
                 );
+
+                return results;
             }
 
-            // Make sure destination folders exist
+            log("Input folder found.");
+
+            // --------------------------------
+            // Create ValidInvoices folder
+            // --------------------------------
+
+            log("Checking ValidInvoices folder...");
+
             Directory.CreateDirectory(validInvoicesFolder);
+
+            log("ValidInvoices folder is ready.");
+
+            // --------------------------------
+            // Create Error folder
+            // --------------------------------
+
+            log("Checking Error folder...");
+
             Directory.CreateDirectory(errorFolder);
+
+            log("Error folder is ready.");
+
+            // --------------------------------
+            // Look for CSV files
+            // --------------------------------
+
+            log("Looking for CSV files in the Input folder...");
 
             string[] csvFiles =
                 Directory.GetFiles(
@@ -76,24 +91,68 @@ namespace InvoiceProcessingSystem.Services
                     "*.csv"
                 );
 
-            foreach (string filePath in csvFiles)
+            if (csvFiles.Length == 0)
             {
+                log(
+                    "CSV file not found. Please input a CSV file into the Input folder."
+                );
+
+                return results;
+            }
+
+            log(
+                $"{csvFiles.Length} CSV file(s) found."
+            );
+
+            // --------------------------------
+            // Process files
+            // --------------------------------
+
+            updateProgress(0);
+
+            for (int fileIndex = 0;
+                 fileIndex < csvFiles.Length;
+                 fileIndex++)
+            {
+                string filePath =
+                    csvFiles[fileIndex];
+
                 FileProcessingResult result =
                     ProcessFile(filePath);
 
                 results.Add(result);
+
+                int progress =
+                    (int)(((fileIndex + 1) /
+                    (double)csvFiles.Length) * 100);
+
+                updateProgress(progress);
             }
+
+            log("Processing completed.");
 
             return results;
         }
 
-        private FileProcessingResult ProcessFile(string filePath)
+        private FileProcessingResult ProcessFile(
+            string filePath)
         {
+            string fileName =
+                Path.GetFileName(filePath);
+
+            log($"Processing file: {fileName}");
+
+            log("Validating invoice file...");
+
             InvoiceFileReader reader =
                 new InvoiceFileReader();
 
             List<Invoice> invoices =
                 reader.ReadInvoices(filePath);
+
+            log(
+                $"{invoices.Count} invoice record(s) found in {fileName}."
+            );
 
             InvoiceValidator validator =
                 new InvoiceValidator();
@@ -101,42 +160,61 @@ namespace InvoiceProcessingSystem.Services
             FileProcessingResult result =
                 new FileProcessingResult();
 
-            result.FileName =
-                Path.GetFileName(filePath);
+            result.FileName = fileName;
+            result.TotalInvoices = invoices.Count;
 
-            result.TotalInvoices =
-                invoices.Count;
-
-            foreach (Invoice invoice in invoices)
+            for (int i = 0; i < invoices.Count; i++)
             {
-                string error =
+                Invoice invoice =
+                    invoices[i];
+
+                List<string> errors =
                     validator.Validate(invoice);
 
-                if (error != "")
+                if (errors.Count > 0)
                 {
                     result.FailedInvoices++;
 
-                    result.ValidationLogs.Add(
-                        new ValidationLog
-                        {
-                            FileName =
-                                Path.GetFileName(filePath),
+                    foreach (string error in errors)
+                    {
+                        result.ValidationLogs.Add(
+                            new ValidationError
+                            {
+                                FileName = fileName,
 
-                            InvoiceId =
-                                invoice.InvoiceId ?? "",
+                                InvoiceId =
+                                    invoice.InvoiceId ?? "",
 
-                            ErrorMessage =
-                                error
-                        }
+                                ErrorMessage = error
+                            }
+                        );
+                    }
+
+                    log(
+                        $"Invoice {invoice.InvoiceId} has {errors.Count} validation error(s)."
                     );
                 }
                 else
                 {
                     result.SuccessfulInvoices++;
+
+                    log(
+                        $"Invoice {invoice.InvoiceId} validated successfully."
+                    );
                 }
+
+                // Progress based on invoices
+                int invoiceProgress =
+                    (int)(((i + 1) /
+                    (double)invoices.Count) * 100);
+
+                updateProgress(invoiceProgress);
             }
 
-            // Move the entire CSV based on validation result
+            // --------------------------------
+            // Move complete CSV
+            // --------------------------------
+
             if (result.FailedInvoices == 0)
             {
                 result.Status = "Valid";
@@ -144,13 +222,17 @@ namespace InvoiceProcessingSystem.Services
                 string destination =
                     Path.Combine(
                         validInvoicesFolder,
-                        Path.GetFileName(filePath)
+                        fileName
                     );
 
                 File.Move(
                     filePath,
                     destination,
                     true
+                );
+
+                log(
+                    $"{fileName} is valid. File moved to ValidInvoices."
                 );
             }
             else
@@ -160,13 +242,17 @@ namespace InvoiceProcessingSystem.Services
                 string destination =
                     Path.Combine(
                         errorFolder,
-                        Path.GetFileName(filePath)
+                        fileName
                     );
 
                 File.Move(
                     filePath,
                     destination,
                     true
+                );
+
+                log(
+                    $"{fileName} contains validation errors. File moved to Error."
                 );
             }
 

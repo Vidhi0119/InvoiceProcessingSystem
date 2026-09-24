@@ -16,45 +16,18 @@ namespace InvoiceProcessingSystem.Services
 
                 if (data.Length < 7)
                 {
-                    // Invalid row structure.
-                    // File-level error handling will be added in InvoiceProcessor.
                     continue;
                 }
-
-                bool isAmountValid =
-                    decimal.TryParse(data[3], out decimal amount);
-
-                bool isInvoiceDateValid =
-                    DateTime.TryParse(data[5], out DateTime invoiceDate);
-
-                bool isDueDateValid =
-                    DateTime.TryParse(data[6], out DateTime dueDate);
 
                 Invoice invoice = new Invoice
                 {
                     InvoiceId = data[0],
-                    
-
                     CustomerId = data[1],
-                    
-
                     CustomerName = data[2],
-                    RawCustomerName = data[2],
-
-                    RawAmount = data[3],
-                    Amount = isAmountValid ? amount : null,
-                    IsAmountValid = isAmountValid,
-
+                    Amount = data[3],
                     Status = data[4],
-                    RawStatus = data[4],
-
-                    RawInvoiceDate = data[5],
-                    InvoiceDate = isInvoiceDateValid ? invoiceDate : null,
-                    IsInvoiceDateValid = isInvoiceDateValid,
-
-                    RawDueDate = data[6],
-                    DueDate = isDueDateValid ? dueDate : null,
-                    IsDueDateValid = isDueDateValid
+                    InvoiceDate = data[5],
+                    DueDate = data[6]
                 };
 
                 invoices.Add(invoice);

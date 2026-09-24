@@ -12,7 +12,7 @@
 
         public string Status { get; set; } = "";
 
-        public List<ValidationLog> ValidationLogs { get; set; }
-            = new List<ValidationLog>();
+        public List<ValidationError> ValidationLogs { get; set; }
+            = new List<ValidationError>();
     }
 }
